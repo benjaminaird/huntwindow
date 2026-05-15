@@ -20,6 +20,12 @@ function usePersistedState(key, def) {
   return [v, setV];
 }
 
+function assetPath(name) {
+  var base = (import.meta && import.meta.env && import.meta.env.BASE_URL) ? import.meta.env.BASE_URL : "/";
+  if (base.charAt(base.length - 1) !== "/") base += "/";
+  return base + String(name).replace(/^\//, "");
+}
+
 // ── Deer scope SVG icon ───────────────────────────────────────
 
 function DeerScope(props) {
@@ -29,7 +35,7 @@ function DeerScope(props) {
   return (
     <span style={{display:"inline-flex",alignItems:"center",justifyContent:"center",width:sz,height:sz,opacity:opacity}}>
       <img
-        src="/huntwindow-emblem.png"
+        src={assetPath("huntwindow-emblem.png")}
         alt="HuntWindow emblem"
         width={sz}
         height={sz}
@@ -43,7 +49,7 @@ function AppBadge(props) {
   var sz = props.size || 64;
   return (
     <img
-      src="/app-icon.png"
+      src={assetPath("app-icon.png")}
       alt="HuntWindow app icon"
       width={sz}
       height={sz}
@@ -112,6 +118,79 @@ var COORDS = {
   "va-roanoke-cty":{lat:37.27,lon:-80.01},"va-montgomery":{lat:37.18,lon:-80.44},"va-bedford":{lat:37.34,lon:-79.52},
   "va-albemarle":{lat:38.02,lon:-78.55},"va-culpeper":{lat:38.45,lon:-77.95},"va-hanover":{lat:37.76,lon:-77.37},
   "dc":{lat:38.89,lon:-77.03},
+  "va-accomack":{lat:37.77,lon:-75.67},
+  "va-alleghany":{lat:37.79,lon:-80.00},
+  "va-amherst":{lat:37.60,lon:-79.14},
+  "va-augusta":{lat:38.15,lon:-79.10},
+  "va-bath":{lat:38.06,lon:-79.74},
+  "va-bland":{lat:37.13,lon:-81.12},
+  "va-botetourt":{lat:37.56,lon:-79.81},
+  "va-brunswick":{lat:36.76,lon:-77.86},
+  "va-buchanan":{lat:37.27,lon:-82.04},
+  "va-campbell":{lat:37.21,lon:-79.10},
+  "va-caroline":{lat:38.03,lon:-77.35},
+  "va-carroll":{lat:36.73,lon:-80.73},
+  "va-charles-city":{lat:37.34,lon:-77.07},
+  "va-charlotte":{lat:37.02,lon:-78.66},
+  "va-clarke":{lat:39.11,lon:-77.99},
+  "va-craig":{lat:37.47,lon:-80.21},
+  "va-dickenson":{lat:37.13,lon:-82.35},
+  "va-dinwiddie":{lat:37.08,lon:-77.64},
+  "va-essex":{lat:37.94,lon:-76.95},
+  "va-floyd":{lat:36.92,lon:-80.32},
+  "va-fluvanna":{lat:37.84,lon:-78.28},
+  "va-franklin":{lat:36.99,lon:-79.88},
+  "va-giles":{lat:37.32,lon:-80.73},
+  "va-gloucester":{lat:37.41,lon:-76.52},
+  "va-goochland":{lat:37.72,lon:-77.92},
+  "va-grayson":{lat:36.65,lon:-81.23},
+  "va-greene":{lat:38.30,lon:-78.47},
+  "va-greensville":{lat:36.68,lon:-77.56},
+  "va-halifax":{lat:36.77,lon:-78.93},
+  "va-henrico":{lat:37.55,lon:-77.39},
+  "va-henry":{lat:36.68,lon:-79.87},
+  "va-highland":{lat:38.36,lon:-79.57},
+  "va-isle-of-wight":{lat:36.91,lon:-76.71},
+  "va-king-george":{lat:38.27,lon:-77.18},
+  "va-king-queen":{lat:37.70,lon:-76.89},
+  "va-king-william":{lat:37.69,lon:-77.01},
+  "va-lancaster":{lat:37.73,lon:-76.42},
+  "va-lee":{lat:36.70,lon:-83.13},
+  "va-louisa":{lat:38.02,lon:-77.96},
+  "va-lunenburg":{lat:36.95,lon:-78.24},
+  "va-madison":{lat:38.41,lon:-78.28},
+  "va-mathews":{lat:37.43,lon:-76.32},
+  "va-mecklenburg":{lat:36.69,lon:-78.37},
+  "va-middlesex":{lat:37.61,lon:-76.53},
+  "va-nelson":{lat:37.79,lon:-78.88},
+  "va-new-kent":{lat:37.50,lon:-76.99},
+  "va-northampton":{lat:37.30,lon:-75.93},
+  "va-northumberland":{lat:37.88,lon:-76.38},
+  "va-nottoway":{lat:37.14,lon:-78.05},
+  "va-orange":{lat:38.25,lon:-78.01},
+  "va-page":{lat:38.62,lon:-78.49},
+  "va-patrick":{lat:36.68,lon:-80.28},
+  "va-pittsylvania":{lat:36.82,lon:-79.40},
+  "va-powhatan":{lat:37.55,lon:-77.91},
+  "va-prince-edward":{lat:37.22,lon:-78.44},
+  "va-prince-george":{lat:37.19,lon:-77.22},
+  "va-pulaski":{lat:37.06,lon:-80.71},
+  "va-rappahannock":{lat:38.68,lon:-78.16},
+  "va-richmond-cty":{lat:37.95,lon:-76.73},
+  "va-rockbridge":{lat:37.81,lon:-79.45},
+  "va-rockingham":{lat:38.52,lon:-78.87},
+  "va-russell":{lat:36.93,lon:-82.10},
+  "va-scott":{lat:36.72,lon:-82.60},
+  "va-smyth":{lat:36.84,lon:-81.54},
+  "va-southampton":{lat:36.72,lon:-77.11},
+  "va-spotsylvania":{lat:38.18,lon:-77.66},
+  "va-surry":{lat:37.12,lon:-76.89},
+  "va-sussex":{lat:36.91,lon:-77.28},
+  "va-tazewell":{lat:37.13,lon:-81.56},
+  "va-washington":{lat:36.72,lon:-81.96},
+  "va-westmoreland":{lat:38.11,lon:-76.80},
+  "va-wise":{lat:36.98,lon:-82.62},
+  "va-wythe":{lat:36.95,lon:-81.08},
   "_":{lat:38.9,lon:-77.0}
 };
 function hasCountyCoords(id) { return !!COORDS[id]; }
@@ -287,6 +366,18 @@ var MU = "https://dnr.maryland.gov/huntersguide/pages/allspecies.aspx";
 var VD = "https://dwr.virginia.gov/hunting/regulations/deer/";
 var VT = "https://dwr.virginia.gov/hunting/regulations/turkey/";
 var VR = "https://dwr.virginia.gov/hunting/regulations/";
+
+var DATA_STATUS = {
+  seasonYear: "2025-2026",
+  lastVerified: "2026-04-01",
+  mode: "Stored local regulation data",
+  note: "Season dates are stored in the app. The sync button records a manual source check; it does not automatically rewrite regulations."
+};
+
+function friendlyDateTime(iso) {
+  if (!iso) return "Never";
+  try { return new Date(iso).toLocaleString(); } catch(e) { return iso; }
+}
 
 var MBA = [{s:"09-05",e:"10-15"},{s:"10-19",e:"11-28"},{s:"12-15",e:"12-19"},{s:"01-04",e:"01-08"},{s:"01-12",e:"01-31"}];
 var MAA = [{s:"09-05",e:"10-15"},{s:"10-19",e:"11-28"},{s:"12-27",e:"01-31"}];
@@ -1580,6 +1671,14 @@ function SettingsScreen(props) {
   var daysLeft=licExp?Math.round((new Date(licExp+"T12:00:00")-new Date(today+"T12:00:00"))/86400000):null;
   var licColor=daysLeft===null?C.txd:daysLeft<0?C.rd:daysLeft<=7?C.rd:daysLeft<=30?C.am:C.gr;
   var licMsg=daysLeft===null?"":daysLeft<0?"License EXPIRED":daysLeft===0?"Expires TODAY":""+daysLeft+" days remaining";
+  var [lastSourceCheck, setLastSourceCheck] = usePersistedState("hw-source-check", "");
+  function handleSourceCheck() {
+    setLastSourceCheck(new Date().toISOString());
+    try {
+      window.open(MU, "_blank", "noopener,noreferrer");
+      window.open(VD, "_blank", "noopener,noreferrer");
+    } catch(e) {}
+  }
 
   function Row(rprops) {
     return (
@@ -1650,6 +1749,23 @@ function SettingsScreen(props) {
             })}
           </div>
         )}
+
+        <div style={{padding:"14px 16px 0"}}>
+          <div style={{fontSize:10,fontWeight:700,color:C.txd,letterSpacing:"0.8px",textTransform:"uppercase",marginBottom:8}}>Regulation Data Status</div>
+          <div style={{background:C.surf,border:"1px solid "+C.bdr,borderRadius:10,padding:"12px 14px",fontSize:11,color:C.txm,lineHeight:1.6}}>
+            <div><strong style={{color:C.tx}}>Mode:</strong> {DATA_STATUS.mode}</div>
+            <div><strong style={{color:C.tx}}>Season year:</strong> {DATA_STATUS.seasonYear}</div>
+            <div><strong style={{color:C.tx}}>App data verified:</strong> {fmtDate(DATA_STATUS.lastVerified)}</div>
+            <div><strong style={{color:C.tx}}>Last manual source check:</strong> {friendlyDateTime(lastSourceCheck)}</div>
+            <div style={{marginTop:8,color:C.txd}}>{DATA_STATUS.note}</div>
+            <button
+              onClick={handleSourceCheck}
+              style={{marginTop:10,background:C.grdp,border:"1px solid "+C.grdk,borderRadius:8,padding:"7px 10px",fontSize:12,color:"#fff",fontWeight:700,cursor:"pointer"}}
+            >
+              Open Official Sources / Record Check
+            </button>
+          </div>
+        </div>
 
         <div style={{padding:"14px 16px 0"}}>
           <div style={{fontSize:10,fontWeight:700,color:C.txd,letterSpacing:"0.8px",textTransform:"uppercase",marginBottom:8}}>Data Sources</div>

@@ -19,3 +19,13 @@
 - Add coordinates for all remaining counties, especially Virginia counties.
 - Split `src/App.jsx` into data/components/utils files.
 - Move regulations into structured JSON so yearly updates are easier.
+
+
+## Data Reliability Pass #1 - Icon hardening, coordinates, and data status
+- Added base-path-safe icon links in `index.html` using Vite `%BASE_URL%` so icons work better on GitHub Pages/subpath deployments.
+- Added dedicated `apple-touch-icon.png`, 32px favicon, 192px/512px PWA icons, and maskable icon.
+- Updated in-app image asset paths to respect `import.meta.env.BASE_URL`.
+- Added coordinate coverage for all currently listed Virginia counties so Open-Meteo weather no longer fails for most VA counties.
+- Added a Settings > Regulation Data Status section that clearly states the app uses stored local regulation data.
+- Added a manual source-check button that opens official DNR/DWR sources and records the local check timestamp.
+- Note: This pass does not implement live automatic regulation parsing. That should be done through a curated JSON update workflow or backend scraper/parser, not blind browser-side scraping.
