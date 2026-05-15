@@ -24,24 +24,31 @@ function usePersistedState(key, def) {
 
 function DeerScope(props) {
   var sz = props.size || 24;
-  var cl = props.color || "#4ade80";
+  var tone = props.color || "#4ade80";
+  var opacity = tone === "#4ade80" ? 1 : 0.72;
   return (
-    <svg width={sz} height={sz} viewBox="0 0 32 32" fill="none">
-      <circle cx="16" cy="16" r="13" stroke={cl} strokeWidth="1.5" fill="none"/>
-      <line x1="16" y1="3" x2="16" y2="10" stroke={cl} strokeWidth="1.2"/>
-      <line x1="16" y1="22" x2="16" y2="29" stroke={cl} strokeWidth="1.2"/>
-      <line x1="3" y1="16" x2="10" y2="16" stroke={cl} strokeWidth="1.2"/>
-      <line x1="22" y1="16" x2="29" y2="16" stroke={cl} strokeWidth="1.2"/>
-      <ellipse cx="16" cy="19" rx="4" ry="3" fill={cl} opacity="0.85"/>
-      <rect x="15" y="15" width="2" height="4" rx="1" fill={cl} opacity="0.85"/>
-      <ellipse cx="16" cy="14" rx="1.8" ry="1.5" fill={cl} opacity="0.85"/>
-      <path d="M14.5 13 L13 10 M13 10 L11.5 9 M13 10 L12 8" stroke={cl} strokeWidth="1" strokeLinecap="round" fill="none"/>
-      <path d="M17.5 13 L19 10 M19 10 L20.5 9 M19 10 L20 8" stroke={cl} strokeWidth="1" strokeLinecap="round" fill="none"/>
-      <line x1="13" y1="22" x2="12" y2="26" stroke={cl} strokeWidth="1.2" strokeLinecap="round"/>
-      <line x1="15" y1="22" x2="14" y2="26" stroke={cl} strokeWidth="1.2" strokeLinecap="round"/>
-      <line x1="17" y1="22" x2="18" y2="26" stroke={cl} strokeWidth="1.2" strokeLinecap="round"/>
-      <line x1="19" y1="22" x2="20" y2="26" stroke={cl} strokeWidth="1.2" strokeLinecap="round"/>
-    </svg>
+    <span style={{display:"inline-flex",alignItems:"center",justifyContent:"center",width:sz,height:sz,opacity:opacity}}>
+      <img
+        src="/huntwindow-emblem.png"
+        alt="HuntWindow emblem"
+        width={sz}
+        height={sz}
+        style={{display:"block",width:sz,height:sz,objectFit:"contain"}}
+      />
+    </span>
+  );
+}
+
+function AppBadge(props) {
+  var sz = props.size || 64;
+  return (
+    <img
+      src="/app-icon.png"
+      alt="HuntWindow app icon"
+      width={sz}
+      height={sz}
+      style={{display:"block",width:sz,height:sz,borderRadius:Math.round(sz*0.22),boxShadow:"0 10px 28px rgba(0,0,0,0.28)"}}
+    />
   );
 }
 
@@ -107,7 +114,8 @@ var COORDS = {
   "dc":{lat:38.89,lon:-77.03},
   "_":{lat:38.9,lon:-77.0}
 };
-function getCoords(id) { return COORDS[id] || COORDS["_"]; }
+function hasCountyCoords(id) { return !!COORDS[id]; }
+function getCoords(id) { return COORDS[id] || (id === "_" ? COORDS["_"] : null); }
 
 // =============================================================
 // DATA — Jurisdictions and Counties
@@ -626,6 +634,11 @@ function useWeather(countyId, dateStr) {
   useEffect(function() {
     if(!countyId||!dateStr){return;}
     var coords=getCoords(countyId);
+    if(!coords){
+      setLoading(false);
+      setWx({unavailable:true, reason:"Weather unavailable: county coordinates have not been added yet."});
+      return;
+    }
     setLoading(true);setWx(null);
     var url="https://api.open-meteo.com/v1/forecast?latitude="+coords.lat+"&longitude="+coords.lon
       +"&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,windspeed_10m_max,weathercode"
@@ -654,16 +667,20 @@ var MNS=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"
 var MNFL=["January","February","March","April","May","June","July","August","September","October","November","December"];
 var DYS=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
 
-function todayStr(){ return new Date().toISOString().slice(0,10); }
+function pad2(n){ return n < 10 ? "0" + n : "" + n; }
+function dateToLocalYMD(d){ return d.getFullYear()+"-"+pad2(d.getMonth()+1)+"-"+pad2(d.getDate()); }
+function todayStr(){ return dateToLocalYMD(new Date()); }
 function parseYMD(s){ var p=s.split("-"); return {y:+p[0],m:+p[1],d:+p[2]}; }
-function makeDate(y,m,d){ return y+"-"+(m<10?"0":"")+m+"-"+(d<10?"0":"")+d; }
+function makeDate(y,m,d){ return y+"-"+pad2(m)+"-"+pad2(d); }
+function localDate(ds){ var q=parseYMD(ds); return new Date(q.y, q.m-1, q.d, 12, 0, 0, 0); }
 function daysIn(y,m){ return new Date(y,m,0).getDate(); }
 function firstDow(y,m){ return new Date(y,m-1,1).getDay(); }
-function addDays(ds,n){ var d=new Date(ds+"T12:00:00"); d.setDate(d.getDate()+n); return d.toISOString().slice(0,10); }
-function longDate(ds){ var q=parseYMD(ds); return DYS[new Date(ds+"T12:00:00").getDay()]+", "+MNS[q.m-1]+" "+q.d+", "+q.y; }
+function addDays(ds,n){ var d=localDate(ds); d.setDate(d.getDate()+n); return dateToLocalYMD(d); }
+function longDate(ds){ var q=parseYMD(ds); return DYS[localDate(ds).getDay()]+", "+MNS[q.m-1]+" "+q.d+", "+q.y; }
 function fmtMmdd(s){ var p=s.split("-"); return MNS[+p[0]-1]+" "+p[1]; }
 function fmtWin(s,e){ return fmtMmdd(s)+" - "+fmtMmdd(e); }
-function fmtDate(s){ var p=s.split("-"); return MNS[+p[1]-1]+" "+p[2]+", "+p[0]; }
+function fmtDate(s){ var p=s.split("-"); return MNS[+p[1]-1]+" "+(+p[2]) +", "+p[0]; }
+function sunForCounty(countyId, dateStr){ var coords=getCoords(countyId); return coords ? sunTimes(dateStr, coords.lat, coords.lon) : {rise:"N/A",set:"N/A"}; }
 
 // =============================================================
 // DESIGN TOKENS
@@ -695,6 +712,18 @@ function WeatherBar(props) {
     return (
       <div style={barStyle}>
         <span>Loading weather...</span>
+        <span style={{color:C.bdr}}>|</span>
+        <span>Sunrise: {rise}</span>
+        <span style={{color:C.bdr}}>|</span>
+        <span>Sunset: {set}</span>
+      </div>
+    );
+  }
+
+  if (wx && wx.unavailable) {
+    return (
+      <div style={barStyle}>
+        <span style={{color:C.am}}>Weather unavailable for this county</span>
         <span style={{color:C.bdr}}>|</span>
         <span>Sunrise: {rise}</span>
         <span style={{color:C.bdr}}>|</span>
@@ -867,7 +896,7 @@ function OnboardingScreen(props) {
     <div style={{display:"flex",flexDirection:"column",height:"100vh",background:C.bg,color:C.tx,fontFamily:"Georgia,serif",overflow:"hidden"}}>
       <div style={{padding:"24px 20px 16px",flexShrink:0}}>
         <div style={{textAlign:"center",marginBottom:20}}>
-          <div style={{display:"flex",justifyContent:"center",marginBottom:6}}><DeerScope size={52}/></div>
+          <div style={{display:"flex",justifyContent:"center",marginBottom:10}}><AppBadge size={72}/></div>
           <div style={{fontSize:28,fontWeight:700,color:C.gr,letterSpacing:"-0.5px"}}>HuntWindow</div>
           <div style={{fontSize:12,color:C.txm,marginTop:4,lineHeight:1.6}}>Know what's legal to hunt — right now, right where you are.</div>
           <div style={{fontSize:11,color:C.txd,marginTop:2}}>Maryland - Virginia - D.C.</div>
@@ -1069,8 +1098,7 @@ function AnimalsScreen(props) {
   var isCWD = !!CWD_SET[countyId];
   var today = todayStr();
   var isToday = dateStr===today;
-  var coords = getCoords(countyId);
-  var sun = sunTimes(dateStr, coords.lat, coords.lon);
+  var sun = sunForCounty(countyId, dateStr);
 
   var summaries = useMemo(function(){return buildSummaries(countyId,di);}, [countyId,di]);
   var filtered = useMemo(function(){
@@ -1218,8 +1246,7 @@ function DayView(props) {
   var di = mmddDate(dateStr);
   var sums = useMemo(function(){return buildSummaries(countyId,di);}, [countyId,di]);
   var today = todayStr();
-  var coords = getCoords(countyId);
-  var sun = sunTimes(dateStr, coords.lat, coords.lon);
+  var sun = sunForCounty(countyId, dateStr);
   var inSz = sums.filter(function(s){return s.open&&!s.noHunt;});
   var outSz = sums.filter(function(s){return !s.open&&!s.noHunt;});
   var ts = useRef(null);
