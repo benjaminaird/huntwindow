@@ -1,0 +1,17 @@
+{
+  "name": "HuntWindow",
+  "short_name": "HuntWindow",
+  "description": "See what game is in season in Maryland, Virginia, and D.C.",
+  "theme_color": "#0e1a0e",
+  "background_color": "#0e1a0e",
+  "display": "standalone",
+  "start_url": "/",
+  "icons": [
+    {
+      "src": "/app-icon.png",
+      "sizes": "1254x1254",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
